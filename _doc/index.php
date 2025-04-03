@@ -320,6 +320,7 @@
                         <a class="nav-link" href="#doc-action">action</a>
                         <a class="nav-link" href="#doc-path">Files Path</a>
                         <a class="nav-link" href="#doc-contact-support">Contact Support</a>
+                        <a class="nav-link" href="data/phpliteadmin.php">Sqlite PHP Admin</a>
                     </nav>
                 </aside>
             </div>
