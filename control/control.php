@@ -11,6 +11,7 @@ class control
      */
     public function getAllPhpFiles(string $directory): array|string
     {
+        // ... (rest of the method remains the same) ...
         // Check if the directory exists and is readable.
         if (!is_dir($directory)) {
             return "Error: Directory '$directory' does not exist.";
@@ -21,6 +22,7 @@ class control
         }
 
         $phpFiles = [];
+        // Use SPL classes directly as they are global
         $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
 
         foreach ($iterator as $file) {
@@ -43,6 +45,7 @@ class control
         return $phpFiles;
     }
 
+    // ... (rest of your getAllPhpFilesTemplate method) ...
     /**
      * Retrieves all PHP files within a specified directory and its subdirectories.
      *
@@ -84,6 +87,8 @@ class control
         return $phpFiles;
     }
 
+
+    // ... (rest of your requireAllPhpFiles method) ...
     /**
      * Requires all PHP files within a specified directory and its subdirectories.
      *
@@ -126,7 +131,12 @@ class control
             try {
                 require_once $phpFile;
                 $successFiles[] = $phpFile;
-            } catch (Throwable $e) {
+            } catch (Throwable $e) { // Use Throwable which catches Errors and Exceptions
+                // Consider logging the error instead of returning immediately
+                error_log("Error: Failed to include file '$phpFile'. Reason: " . $e->getMessage());
+                // Depending on requirements, you might want to collect errors and return them all,
+                // or throw an exception, or continue trying to include other files.
+                // Returning immediately might hide subsequent inclusion failures.
                 return "Error: Failed to include file '$phpFile'. Reason: " . $e->getMessage();
             }
         }
@@ -134,6 +144,8 @@ class control
         return $successFiles;
     }
 
+
+    // ... (rest of your requireAllAutoloadFiles method) ...
     /**
      * Searches for 'autoload.php' files within a directory and its subdirectories and includes them.
      *
@@ -169,14 +181,20 @@ class control
 
         // Check if any 'autoload.php' files were found.
         if (empty($autoloadFiles)) {
-            return "Warning: No 'autoload.php' files found in directory '$directory'.";
+            // Changed to log a warning instead of returning it as a string,
+            // as this might not be a critical error.
+            error_log("Warning: No 'autoload.php' files found in directory '$directory'.");
+            return []; // Return empty array indicating none were found/included
         }
 
         foreach ($autoloadFiles as $autoloadFile) {
             try {
                 require_once $autoloadFile;
                 $successFiles[] = $autoloadFile;
-            } catch (Throwable $e) {
+            } catch (Throwable $e) { // Use Throwable
+                 // Consider logging the error instead of returning immediately
+                error_log("Error: Failed to include file '$autoloadFile'. Reason: " . $e->getMessage());
+                // See comment in requireAllPhpFiles about error handling strategy.
                 return "Error: Failed to include file '$autoloadFile'. Reason: " . $e->getMessage();
             }
         }
@@ -184,8 +202,56 @@ class control
         return $successFiles;
     }
 
-    
-}
+
+    /**
+     * Creates a SoapClient instance if the server location is accessible.
+     *
+     * @param string $location The SOAP server location URL. Defaults to 'http://localhost/server/server.php'.
+     * @param string $uri The SOAP server URI. Defaults to 'http://localhost/server'.
+     * @param int $timeout Connection timeout in seconds. Defaults to 5.
+     * @return SoapClient|false A SoapClient instance on success, false otherwise.
+     */
+    public function serviceFx(
+        string $location = 'http://localhost/server/server1.php',
+        string $uri = 'http://localhost/server',
+        int $timeout = 5
+    ): \SoapClient|false { // Use \SoapClient in type hint for clarity
+
+        // 1. Check if the server location is accessible
+        $context = stream_context_create(['http' => ['timeout' => $timeout]]);
+        $headers = @get_headers($location, false, $context);
+
+        if ($headers === false || strpos($headers[0], '200 OK') === false) {
+            $status = $headers === false ? 'unreachable' : $headers[0];
+            error_log("servFx Error: SOAP server location '{$location}' is not accessible or did not return a 200 OK status. Status: {$status}");
+            return false;
+        }
+
+        // 2. If accessible, try to initialize the SOAP client
+        try {
+            // Use \SoapClient directly here
+            $client = new \SoapClient(
+                null,
+                [
+                    'location' => $location,
+                    'uri'      => $uri,
+                    'trace'    => 1,
+                    'connection_timeout' => $timeout,
+                    'exceptions' => true
+                ]
+            );
+            return $client;
+        } catch (\SoapFault $e) { // Use \SoapFault directly here
+            error_log("servFx SOAP Error: Failed to create SoapClient for URI '{$uri}' at location '{$location}'. Message: " . $e->getMessage());
+            return false;
+        } catch (\Exception $e) { // Use \Exception directly here
+            error_log("servFx General Error: Failed to create SoapClient for URI '{$uri}' at location '{$location}'. Message: " . $e->getMessage());
+            return false;
+        }
+    }
+
+} // End of class control
+
 // Create an instance of control
 $controller = new control();
 ?>

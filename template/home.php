@@ -52,7 +52,7 @@
 </head>
 <body>
     <div class="welcome-container">
-        <h1>Welcome to RabbitLite Framework v1</h1>
+        <h1>Welcome to RabbitLite Framework Ver1.0.15</h1>
         <p>A lightweight framework for accelerating your PHP web application development!</p>
         <a href="./index.php" class="btn">Get Started</a>
     </div>

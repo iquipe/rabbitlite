@@ -21,6 +21,79 @@ function validateUrlRegex($url) {
   return preg_match($regex, $url) === 1;
 }
 
+// /**
+//  * Creates a SoapClient instance if the server location is accessible.
+//  *
+//  * @return SoapClient|false A SoapClient instance on success, false otherwise.
+//  */
+// function servFx() {
+//     $location = 'http://localhost/server.php'; // Server's URL
+//     $uri = 'http://localhost/soap-server';      // Server's URI
+
+//     // 1. Check if the server location is accessible
+//     // Use get_headers which is often faster for just checking reachability
+//     // Suppress errors in case the host is down or DNS fails
+//     $headers = @get_headers($location);
+//     if ($headers === false || strpos($headers[0], '200 OK') === false) {
+//         // You might want to log this error instead of just returning false
+//         error_log("servFx Error: SOAP server location '{$location}' is not accessible or did not return a 200 OK status.");
+//         return false; // Server not accessible or didn't respond correctly
+//     }
+
+//     // 2. If accessible, try to initialize the SOAP client
+//     try {
+//         $client = new SoapClient(
+//             null, // No WSDL file (non-WSDL mode)
+//             [
+//                 'location' => $location,
+//                 'uri'      => $uri,
+//                 'trace'    => 1, // Enable tracing for debugging (consider disabling in production)
+//                 // Add a connection timeout (optional but recommended)
+//                 'connection_timeout' => 5 // Timeout in seconds
+//             ]
+//         );
+//         return $client; // Return the client instance on success
+//     } catch (SoapFault $e) {
+//         // Log the specific SOAP error for debugging
+//         error_log("servFx SOAP Error: Failed to create SoapClient for URI '{$uri}' at location '{$location}'. Message: " . $e->getMessage());
+//         // Optionally log request/response if trace was enabled and client was partially created
+//         // Note: $client might not be fully initialized here if the constructor failed early.
+//         // if (isset($client) && is_object($client)) {
+//         //     error_log("Last Request:\n" . $client->__getLastRequest());
+//         //     error_log("Last Response:\n" . $client->__getLastResponse());
+//         // }
+//         return false; // Return false if SoapClient creation fails
+//     } catch (Exception $e) {
+//         // Catch other potential exceptions during client creation
+//         error_log("servFx General Error: Failed to create SoapClient. Message: " . $e->getMessage());
+//         return false;
+//     }
+// }
+
+// // ... (rest of your functions) ...
+
+// Example Usage:
+/*
+$soapClient = servFx();
+
+if ($soapClient instanceof SoapClient) {
+    echo "Successfully connected to SOAP server.<br>";
+    try {
+        // Now you can use the client
+        $sum = $soapClient->add(5, 3);
+        echo "Result of add(5, 3): " . $sum;
+        // ... other calls
+    } catch (SoapFault $e) {
+        echo "SOAP Call Error: " . $e->getMessage() . "<br>";
+        // Debugging info if needed
+        echo "Last Request:\n" . $soapClient->__getLastRequest() . "<br>";
+        echo "Last Response:\n" . $soapClient->__getLastResponse() . "<br>";
+    }
+} else {
+    echo "Failed to connect to the SOAP server or the server is down.";
+}
+*/
+
 //Example
 // $url1 = "https://www.example.com";
 // $url2 = "ftp://invalid.url"; //This will fail

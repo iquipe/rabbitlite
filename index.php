@@ -1,13 +1,21 @@
 <?php
 session_start(); // Start a new session
+// --- Error Reporting Configuration ---
+// For Development: Display all errors on screen AND log them to a file
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// --- Error Reporting (Optional but Recommended for Development) ---
-// Uncomment these lines during development to see all errors
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-// error_reporting(E_ALL);
+// For Production (or general logging): Log all errors to a file
+//ini_set('log_errors', 1); // Enable error logging
+//ini_set('error_log', __DIR__ . '/php_errors.log'); // Specify the log file path (adjust as needed)
+// You might still want E_ALL for logging, even if not displayed
+//error_reporting(E_ALL);
+// --- End Error Reporting Configuration ---
+
 
 // --- Define Core File Paths ---
+// ... (rest of your existing code remains the same) ...
 $controlDir = __DIR__ . '/control/'; // Use __DIR__ for reliability
 $controlFile = $controlDir . 'control.php';
 $functionsFile = $controlDir . 'functions.php';
@@ -18,7 +26,7 @@ $routeFolderPath = $controlDir . 'route.php'; // Path to the main router
 
 // --- Function to handle fatal errors ---
 function handle_fatal_error(string $message, string $file = '', int $line = 0): void {
-    // Log the error (replace with your preferred logging mechanism)
+    // Log the error (uses the error_log path set above)
     error_log("Fatal Error: $message in $file on line $line");
 
     // Display a user-friendly message (avoid showing detailed errors in production)
@@ -31,6 +39,7 @@ function handle_fatal_error(string $message, string $file = '', int $line = 0): 
     echo "</body></html>";
     exit; // Stop script execution
 }
+
 
 // --- Include Core Files with Error Checking ---
 try {

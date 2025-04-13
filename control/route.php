@@ -1,6 +1,6 @@
 <?php
 
-if(!isset($_REQUEST['submit'])){
+ if(!isset($_REQUEST['submit'])){
     if(!isset($_REQUEST['page'])){
         if(!isset($_REQUEST['main'])){
             require($template['home']);
@@ -13,6 +13,6 @@ if(!isset($_REQUEST['submit'])){
     }
 }else {
     require("./route/action.php");
-}
+}        
 
 ?>
