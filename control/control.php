@@ -212,8 +212,8 @@ class control
      * @return SoapClient|false A SoapClient instance on success, false otherwise.
      */
     public function serviceFx(
-        string $location = 'http://localhost/server/server1.php',
-        string $uri = 'http://localhost/server',
+        string $location = 'https://rabbitlite.iquipedigital.com/servfx/server.php',
+        string $uri = 'https://rabbitlite.iquipedigital.com/servfx/',
         int $timeout = 5
     ): \SoapClient|false { // Use \SoapClient in type hint for clarity
 
