@@ -1,5 +1,9 @@
 <?php
 //global functions
+function env(){
+    $env = parse_ini_file(__DIR__ . '/../.env');
+    return $env;
+  }
 // Function to load and parse Markdown content
 function loadMarkdownContent($markdownFile) {
     global $parsedown; // Access the Parsedown instance
